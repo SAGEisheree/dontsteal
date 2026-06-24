@@ -7,6 +7,7 @@ export default function Decoder() {
   const [processing, setProcessing] = useState(false)
   const [warning, setWarning] = useState('')
   const imgRef = useRef<HTMLImageElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const outCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -115,23 +116,26 @@ export default function Decoder() {
     <div>
       <h2 className="text-lg font-medium mb-3">Decoder — Extract & Verify</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="card">
           <div className="text-sm text-muted mb-2">Upload Watermarked PNG</div>
-          <input type="file" accept="image/*" onChange={handleDecode} />
-          <div className="mt-2 text-xs">{fileName}</div>
+          <button type="button" onClick={() => inputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white hover:bg-slate-700 transition">
+            Browse Watermarked File
+          </button>
+          <input ref={inputRef} className="hidden" type="file" accept="image/png" onChange={handleDecode} />
+          <div className="mt-2 text-xs text-muted">{fileName || 'Select the exported PNG to verify watermark'}</div>
           {warning && <div className="text-yellow-300 mt-2">{warning}</div>}
           <div className="mt-3">Status: <span className="font-medium">{processing ? 'Processing...' : status}</span></div>
         </div>
 
         <div className="card">
           <div className="text-sm text-muted mb-2">Preview / Highlight</div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div className="border p-1">
-              <canvas ref={canvasRef} style={{maxWidth:'100%'}} />
+              <canvas ref={canvasRef} className="w-full h-auto block" style={{maxWidth:'100%'}} />
             </div>
             <div className="border p-1">
-              <canvas ref={outCanvasRef} style={{maxWidth:'100%'}} />
+              <canvas ref={outCanvasRef} className="w-full h-auto block" style={{maxWidth:'100%'}} />
             </div>
           </div>
         </div>

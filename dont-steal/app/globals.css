@@ -35,4 +35,5 @@ body {
 .text-muted {
   color: rgba(255,255,255,0.55);
 }
-.container { max-width: 1100px; margin: 0 auto; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+.card { padding: 12px; }

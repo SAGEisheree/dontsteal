@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from 'react'
-import Nvbr from './navbar/nvbr'
 import Encoder from './components/Encoder'
 import Decoder from './components/Decoder'
 
@@ -8,16 +7,20 @@ export default function Home() {
   const [tab, setTab] = useState<'encoder'|'decoder'>('encoder')
   return (
     <div className="">
-      <Nvbr />
       <main style={{ padding: 24 }}>
         <div className="min-h-screen p-8">
           <div className="container mx-auto">
-            <header className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-semibold">Invisible LSB Steganography</h1>
-              <nav className="space-x-2">
-                <button onClick={() => setTab('encoder')} className={`px-3 py-1 rounded ${tab==='encoder' ? 'bg-purple-600' : 'bg-white/5'}`}>Tab 1: Embed Watermark</button>
-                <button onClick={() => setTab('decoder')} className={`px-3 py-1 rounded ${tab==='decoder' ? 'bg-purple-600' : 'bg-white/5'}`}>Tab 2: Extract & Verify</button>
-              </nav>
+            <header className="flex flex-col gap-4 sm:gap-6 mb-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h1 className="text-3xl sm:text-4xl font-semibold">Art sheriff</h1>
+                  <p className="mt-2 max-w-2xl text-sm text-muted">Add an invisible watermark on main image.select black and white picture of watermark. Resizing,compression will reduce effectiveness of watermark</p>
+                </div>
+                <div className="flex w-full sm:w-auto gap-2">
+                  <button onClick={() => setTab('encoder')} className={`w-full sm:w-auto px-4 py-2 rounded ${tab==='encoder' ? 'bg-purple-600 text-white' : 'bg-slate-800 text-slate-100'}`}>Embed Watermark</button>
+                  <button onClick={() => setTab('decoder')} className={`w-full sm:w-auto px-4 py-2 rounded ${tab==='decoder' ? 'bg-purple-600 text-white' : 'bg-slate-800 text-slate-100'}`}>Extract & Verify</button>
+                </div>
+              </div>
             </header>
 
             <main className="grid grid-cols-1 gap-6">
@@ -25,7 +28,7 @@ export default function Home() {
                 {tab === 'encoder' ? <Encoder /> : <Decoder />}
               </div>
 
-              <footer className="text-sm text-muted">All processing happens client-side in the browser. Exports are lossless PNG.</footer>
+              <footer className="text-sm text-muted">All processing happens locally and no data is sent anywhere.</footer>
             </main>
           </div>
         </div>

@@ -8,6 +8,8 @@ export default function Encoder() {
   const [error, setError] = useState('')
   const mainImgRef = useRef<HTMLImageElement | null>(null)
   const markImgRef = useRef<HTMLImageElement | null>(null)
+  const mainInputRef = useRef<HTMLInputElement | null>(null)
+  const markInputRef = useRef<HTMLInputElement | null>(null)
   const hiddenCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const markCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -130,22 +132,28 @@ export default function Encoder() {
     <div>
       <h2 className="text-lg font-medium mb-3">Encoder — Embed Watermark</h2>
 
-      <div className="grid grid-cols-2 gap-4">
-        <label className="card flex flex-col items-center justify-center p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="card flex flex-col items-center justify-center p-4 w-full">
           <div className="text-sm text-muted mb-2">Main Photo (cover)</div>
-          <input type="file" accept="image/*" onChange={handleMainChange} />
-          <div className="mt-2 text-xs">{mainFileName}</div>
-        </label>
+          <button type="button" onClick={() => mainInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white hover:bg-slate-700 transition">
+            Browse Main Image
+          </button>
+          <input ref={mainInputRef} className="hidden" type="file" accept="image/*" onChange={handleMainChange} />
+          <div className="mt-3 text-xs text-center text-muted">{mainFileName || 'PNG/JPG recommended, max quality'}</div>
+        </div>
 
-        <label className="card flex flex-col items-center justify-center p-4">
+        <div className="card flex flex-col items-center justify-center p-4 w-full">
           <div className="text-sm text-muted mb-2">Black & White Watermark</div>
-          <input type="file" accept="image/*" onChange={handleMarkChange} />
-          <div className="mt-2 text-xs">{markFileName}</div>
-        </label>
+          <button type="button" onClick={() => markInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white hover:bg-slate-700 transition">
+            Browse Watermark Image
+          </button>
+          <input ref={markInputRef} className="hidden" type="file" accept="image/*" onChange={handleMarkChange} />
+          <div className="mt-3 text-xs text-center text-muted">{markFileName || 'Use a black & white image for best results'}</div>
+        </div>
       </div>
 
       <div className="mt-4 flex items-center space-x-3">
-        <button onClick={handleEmbed} disabled={processing} className="px-4 py-2 bg-purple-600 rounded disabled:opacity-60">{processing ? 'Embedding...' : 'Embed & Download'}</button>
+        <button onClick={handleEmbed} disabled={processing} className="w-full sm:w-auto px-4 py-2 bg-purple-600 rounded disabled:opacity-60">{processing ? 'Embedding...' : 'Embed & Download'}</button>
         {error && <div className="text-red-400">{error}</div>}
       </div>
 
