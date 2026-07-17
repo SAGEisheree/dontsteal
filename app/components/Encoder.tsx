@@ -4,6 +4,8 @@ import React, { useRef, useState } from 'react'
 export default function Encoder() {
   const [mainFileName, setMainFileName] = useState('')
   const [markFileName, setMarkFileName] = useState('')
+  const [mainImgSrc, setMainImgSrc] = useState('')
+  const [markImgSrc, setMarkImgSrc] = useState('')
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState('')
   const mainImgRef = useRef<HTMLImageElement | null>(null)
@@ -51,7 +53,7 @@ export default function Encoder() {
       markCanvas.width = width
       markCanvas.height = height
       const mctx = markCanvas.getContext('2d')!
-      mctx.clearRect(0,0,width,height)
+      mctx.clearRect(0, 0, width, height)
       mctx.drawImage(markImg, 0, 0, width, height)
 
       const mainImageData = ctx.getImageData(0, 0, width, height)
@@ -60,23 +62,23 @@ export default function Encoder() {
       const wData = markImageData.data
 
       // Embed a 10-pixel magic header pattern to aid detection (1011001110)
-      const magic = [1,0,1,1,0,0,1,1,1,0]
-      for (let h=0; h<10; h++) {
-        const idx = h*4
+      const magic = [1, 0, 1, 1, 0, 0, 1, 1, 1, 0]
+      for (let h = 0; h < 10; h++) {
+        const idx = h * 4
         if (magic[h]) mData[idx] |= 1
         else mData[idx] &= ~1
       }
 
       const total = mData.length
-      const chunk = 1024*4
+      const chunk = 1024 * 4
       for (let start = 40; start < total; start += chunk) {
         const end = Math.min(start + chunk, total)
         for (let i = start; i < end; i += 4) {
           const rIdx = i
           const wr = wData[i]
-          const wg = wData[i+1]
-          const wb = wData[i+2]
-          const brightness = (wr*0.299 + wg*0.587 + wb*0.114)
+          const wg = wData[i + 1]
+          const wb = wData[i + 2]
+          const brightness = (wr * 0.299 + wg * 0.587 + wb * 0.114)
           if (brightness > 128) {
             mData[rIdx] |= 1
           } else {
@@ -111,6 +113,7 @@ export default function Encoder() {
     try {
       const img = await readImageFile(f)
       mainImgRef.current = img
+      setMainImgSrc(img.src)
     } catch (err) {
       setError('Failed to load main image')
     }
@@ -123,42 +126,59 @@ export default function Encoder() {
     try {
       const img = await readImageFile(f)
       markImgRef.current = img
+      setMarkImgSrc(img.src)
     } catch (err) {
       setError('Failed to load watermark image')
     }
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-medium mb-3">Encoder — Embed Watermark</h2>
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-[#ABF203] brutalist-border p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+          <div className="font-bold text-black mb-4 uppercase tracking-wider text-sm sm:text-base">Main Photo (cover)</div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="card flex flex-col items-center justify-center p-4 w-full">
-          <div className="text-sm text-muted mb-2">Main Photo (cover)</div>
-          <button type="button" onClick={() => mainInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white hover:bg-slate-700 transition">
-            Browse Main Image
-          </button>
+          {mainImgSrc ? (
+            <div className="mb-4 w-full aspect-video bg-white brutalist-border overflow-hidden flex items-center justify-center cursor-pointer" onClick={() => mainInputRef.current?.click()}>
+              <img src={mainImgSrc} alt="Main preview" className="object-contain w-full h-full" />
+            </div>
+          ) : (
+            <button type="button" onClick={() => mainInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-white brutalist-button font-bold text-black hover:bg-slate-100 transition whitespace-normal sm:whitespace-nowrap text-sm sm:text-base">
+              BROWSE IMAGE
+            </button>
+          )}
+
           <input ref={mainInputRef} className="hidden" type="file" accept="image/*" onChange={handleMainChange} />
-          <div className="mt-3 text-xs text-center text-muted">{mainFileName || 'PNG/JPG recommended, max quality'}</div>
+          <div className="mt-4 text-xs sm:text-sm font-medium text-black/80">{mainFileName || 'PNG/JPG recommended'}</div>
         </div>
 
-        <div className="card flex flex-col items-center justify-center p-4 w-full">
-          <div className="text-sm text-muted mb-2">Black & White Watermark</div>
-          <button type="button" onClick={() => markInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-800 border border-slate-700 rounded text-white hover:bg-slate-700 transition">
-            Browse Watermark Image
-          </button>
+        <div className="bg-[#ABF203] brutalist-border p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+          <div className="font-bold text-black mb-4 uppercase tracking-wider text-sm sm:text-base">B/W Watermark</div>
+
+          {markImgSrc ? (
+            <div className="mb-4 w-full aspect-video bg-white brutalist-border overflow-hidden flex items-center justify-center cursor-pointer" onClick={() => markInputRef.current?.click()}>
+              <img src={markImgSrc} alt="Watermark preview" className="object-contain w-full h-full" />
+            </div>
+          ) : (
+            <button type="button" onClick={() => markInputRef.current?.click()} className="w-full inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-white brutalist-button font-bold text-black hover:bg-slate-100 transition whitespace-normal sm:whitespace-nowrap text-sm sm:text-base">
+              BROWSE WATERMARK
+            </button>
+          )}
+
           <input ref={markInputRef} className="hidden" type="file" accept="image/*" onChange={handleMarkChange} />
-          <div className="mt-3 text-xs text-center text-muted">{markFileName || 'Use a black & white image for best results'}</div>
+          <div className="mt-4 text-xs sm:text-sm font-medium text-black/80">{markFileName || 'Use black & white'}</div>
         </div>
       </div>
 
-      <div className="mt-4 flex items-center space-x-3">
-        <button onClick={handleEmbed} disabled={processing} className="w-full sm:w-auto px-4 py-2 bg-purple-600 rounded disabled:opacity-60">{processing ? 'Embedding...' : 'Embed & Download'}</button>
-        {error && <div className="text-red-400">{error}</div>}
+      <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+        <button onClick={handleEmbed} disabled={processing} className="w-full sm:w-auto px-8 py-4 bg-[#1D4ED8] brutalist-button text-white font-black text-xl disabled:opacity-60 uppercase">
+          {processing ? 'Processing...' : 'Embed & Download'}
+        </button>
+        {error && <div className="text-[#EF4444] font-bold bg-white px-4 py-2 brutalist-border">{error}</div>}
       </div>
 
-      <canvas ref={hiddenCanvasRef} style={{display:'none'}} />
-      <canvas ref={markCanvasRef} style={{display:'none'}} />
+      <canvas ref={hiddenCanvasRef} style={{ display: 'none' }} />
+      <canvas ref={markCanvasRef} style={{ display: 'none' }} />
     </div>
   )
 }

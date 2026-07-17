@@ -1,50 +1,70 @@
-"use client"
-import React, { useState } from 'react'
 import Encoder from './components/Encoder'
 import Decoder from './components/Decoder'
 
 export default function Home() {
-  const [tab, setTab] = useState<'encoder'|'decoder'>('encoder')
-  return (
-    <div className="page-shell relative min-h-screen overflow-hidden">
-      <div className="background-grid" aria-hidden="true" />
-      <main className="relative z-10 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="container mx-auto">
-          <section className="glass-panel p-8 sm:p-10 mb-8">
-            <div className="flex flex-col gap-6 lg:gap-8">
-              <div className="flex flex-col gap-4 sm:gap-6 sm:flex-row sm:items-end sm:justify-between">
-                <div className="max-w-2xl">
-                  <p className="text-3xl font-bold uppercase tracking-[0.24em] text-purple-700">Art sheriff</p>
-                  <h1 className="text-3xl sm:text-5xl font-semibold leading-tight">Secure your images with invisible watermark</h1>
-                  <p className="mt-3 text-base sm:text-lg text-slate-700/85">Add an invisible watermark on main image.select black and white picture of watermark. Resizing,compression will reduce effectiveness of watermark.</p>
-                </div>
-                <div className="rounded-3xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-slate-900/10 sm:w-auto">
-                  <p className="text-sm text-slate-600">Local-first privacy</p>
-                  <p className="mt-1 text-2xl font-semibold text-slate-900">No uploads • No servers</p>
-                </div>
-              </div>
+    return (
+        <main className="min-h-screen p-4 sm:p-8 md:p-12 mb-16 max-w-6xl mx-auto flex flex-col gap-16">
+            {/* Hero Section */}
+            <header className="bg-[#ABF203] brutalist-border p-8 md:p-16 text-center flex flex-col items-center justify-center relative shadow-[8px_8px_0px_#111111] overflow-hidden">
+                <h1
+                    className="text-6xl md:text-8xl font-black uppercase text-black mb-6 tracking-tighter"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                    Art Sheriff
+                </h1>
+                <p className="text-lg md:text-2xl font-bold max-w-3xl text-black bg-white px-8 py-3 brutalist-border">
+                    Secure Your Images with Invisible Watermarks
+                </p>
+            </header>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="grid w-full sm:w-auto grid-cols-2 gap-2">
-                </div>
-                <div className="flex w-full sm:w-auto gap-2">
-                  <button onClick={() => setTab('encoder')} className={`w-full sm:w-auto px-5 py-3 rounded-2xl font-medium transition ${tab==='encoder' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-800 text-slate-100 hover:bg-slate-700'}`}>Embed Watermark</button>
-                  <button onClick={() => setTab('decoder')} className={`w-full sm:w-auto px-5 py-3 rounded-2xl font-medium transition ${tab==='decoder' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-800 text-slate-100 hover:bg-slate-700'}`}>Extract & Verify</button>
-                </div>
-              </div>
-            </div>
-          </section>
+            {/* Main Content Areas */}
+            <div className="flex flex-col gap-20">
+                {/* Encoder Area */}
+                <section className="bg-white brutalist-border p-6 sm:p-10 flex flex-col gap-8 shadow-[8px_8px_0px_#111111]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-4 border-black pb-4 gap-4">
+                        <h2
+                            className="text-4xl md:text-5xl font-black uppercase text-black"
+                            style={{ fontFamily: 'var(--font-heading)' }}
+                        >
+                            1. Embed
+                        </h2>
+                        <div className="bg-[#EF4444] text-white px-4 py-2 font-bold uppercase text-sm brutalist-border">
+                            Protection Phase
+                        </div>
+                    </div>
+                    <p className="text-black font-medium text-lg max-w-2xl leading-relaxed">
+                        Upload your main image and a black & white watermark.
+                        We will invisibly embed the pattern without altering the visual quality of your artwork.
+                    </p>
+                    <Encoder />
+                </section>
 
-          <section className="glass-panel p-6 sm:p-8">
-            <div className="grid gap-6">
-              <div className="card p-6">
-                {tab === 'encoder' ? <Encoder /> : <Decoder />}
-              </div>
-              <footer className="text-sm text-slate-700/70">All processing happens locally and no data is sent anywhere.</footer>
+                {/* Decoder Area */}
+                <section className="bg-white brutalist-border p-6 sm:p-10 flex flex-col gap-8 shadow-[8px_8px_0px_#111111]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-4 border-black pb-4 gap-4">
+                        <h2
+                            className="text-4xl md:text-5xl font-black uppercase text-black"
+                            style={{ fontFamily: 'var(--font-heading)' }}
+                        >
+                            2. Detect
+                        </h2>
+                        <div className="bg-[#1D4ED8] text-white px-4 py-2 font-bold uppercase text-sm brutalist-border">
+                            Verification Phase
+                        </div>
+                    </div>
+                    <p className="text-black font-medium text-lg max-w-2xl leading-relaxed">
+                        Upload a watermarked PNG to scan and extract the hidden pattern, proving your ownership.
+                    </p>
+                    <Decoder />
+                </section>
             </div>
-          </section>
-        </div>
-      </main>
-    </div>
-  )
+
+            <footer className="mt-12 border-t-8 border-black pt-8 text-center font-bold uppercase flex flex-col sm:flex-row justify-between items-center gap-6 pb-8">
+                <span className="text-xl">© {new Date().getFullYear()} Art Sheriff</span>
+                <span className="bg-black text-[#ABF203] px-6 py-3 text-lg font-black tracking-wider shadow-[4px_4px_0px_#ABF203] border-4 border-black">
+                    Don't Steal My Art
+                </span>
+            </footer>
+        </main>
+    )
 }
